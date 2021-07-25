@@ -38,7 +38,18 @@ WHERE last_month IS NOT NULL;
 
 -- Retained customers every month.
 
-SELECT activity_month, COUNT(DISTINCT(customer_id)) AS retained_customers 
-FROM sakila.customer_activity
-WHERE customer_id IS NOT NULL
-GROUP BY activity_month;
+-- Find out how many customers you have at the end of a given period (week, month, or quarter). 
+-- Subtract the number of new customers you’ve acquired over that time. 
+-- Divide by the number of customers you had at the beginning of that period. 
+-- Then, multiply that by one hundred.
+
+WITH cte_diff_monthly_active_customers AS 
+(
+SELECT activity_month, active_customers, 
+LAG(active_customers) OVER (ORDER BY activity_month) AS last_month
+FROM sakila.monthly_active_customers
+)
+SELECT activity_month, active_customers, last_month, 
+   (active_customers - last_month) AS retained_customers
+FROM cte_diff_monthly_active_customers
+WHERE last_month IS NOT NULL;
