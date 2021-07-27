@@ -16,7 +16,10 @@
 -- 3. Percentage change in the number of active customers.
 -- -> column per_growth
 -- 4. Retained customers every month.
--- -> column difference
+-- -> It would be necessary to find the amount of clients at the beginning and at the end of the month.
+-- Then subtract the number of new customers we’ve acquired over that time -> column difference.
+-- Then divide by the number of customers you had at the beginning of that period.
+-- If a percentage is also desired, then, multiply that by one hundred.
 WITH cte_user_activity AS (
 SELECT customer_id,
 		convert(rental_date, date) AS activity_date
